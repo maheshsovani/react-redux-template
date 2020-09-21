@@ -1,25 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
+import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
+import {Provider} from "react-redux";
+
+import {Result} from "antd";
 import './App.css';
+import "antd/dist/antd.css";
+import "bootstrap/dist/css/bootstrap.css";
+
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import Home from "./pages/Home";
+import withAuth from "./withAuth";
+import store from "./store/store";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={Login}/>
+          <Route path="/login" component={Login}/>
+          <Route path="/signup" component={SignUp}/>
+          <Route path="/:url" component={withAuth(Home)}/>
+          <Route>
+            <Result
+              status="404"
+              title="404"
+              subTitle="Sorry, the page you visited does not exist."
+              extra={<Link to="/login">Back Home</Link>}
+            />
+          </Route>
+        </Switch>
+      </Router>
+    </Provider>
   );
 }
 
