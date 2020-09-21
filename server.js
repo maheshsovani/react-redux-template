@@ -46,6 +46,7 @@ app.post("/api/signup", function (req, res) {
 });
 
 app.post("/api/authenticate", extractUserDetails, authenticate);
+app.post("/api/logout", logout);
 app.get('/checkToken', withAuth, function (req, res) {
   res.sendStatus(200);
 });
