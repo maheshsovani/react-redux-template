@@ -3,12 +3,44 @@ import {Link} from "react-router-dom";
 import {Button, Form, Input, message, Typography} from "antd";
 import {LockTwoTone, MailTwoTone} from "@ant-design/icons";
 import CustomLayout from "../components/CustomLayout";
+import {useDispatch} from "react-redux";
+import {setEmail, setName} from "../actions/actions";
 
 const {Title} = Typography;
 
 const Login = ({history}) => {
   const [email, setLocalEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    fetch("/api/authenticate", {
+      method: "POST",
+      body: JSON.stringify({email, password}),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          history.push("/home");
+        } else {
+          throw new Error(res.error);
+        }
+        return res.json();
+      })
+      .then((res) => {
+        dispatch(setName(res.name));
+        dispatch(setEmail(email));
+      })
+      .catch((err) => {
+        console.error(err);
+        message.error("Error logging in please try again");
+      });
+  };
+
   return (
     <CustomLayout>
       <Form
@@ -48,9 +80,8 @@ const Login = ({history}) => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Item>
-
         <Form.Item>
-          <Button type={"primary"} onClick={() => console.log('Successfully logged in !!')} block>
+          <Button type={"primary"} onClick={onSubmit} block>
             Log In
           </Button>
           Don't have an account? <Link to="/signup">Create One</Link>

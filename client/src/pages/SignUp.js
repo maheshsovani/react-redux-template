@@ -10,7 +10,27 @@ const SignUp = ({history}) => {
   const [email, setLocalEmail] = useState("");
   const [name, setLocalName] = useState("");
   const [password, setPassword] = useState("");
-
+  const onSubmit = (event) => {
+    event.preventDefault();
+    fetch("/api/signup", {
+      method: "POST",
+      body: JSON.stringify({name, email, password}),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          history.push("/login");
+        } else {
+          throw new Error(res.error);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        message.error("Error Creating Account please try again");
+      });
+  };
   return (
     <CustomLayout>
       <Form
@@ -94,7 +114,7 @@ const SignUp = ({history}) => {
           />
         </Form.Item>
         <Form.Item>
-          <Button type={"primary"} onClick={()=>console.log("SignUp is successful !!")} block>
+          <Button type={"primary"} onClick={onSubmit} block>
             Create Account
           </Button>
           Already have an account? <Link to="/login">Log in</Link>

@@ -21,7 +21,7 @@ function App() {
           <Route exact path="/" component={Login}/>
           <Route path="/login" component={Login}/>
           <Route path="/signup" component={SignUp}/>
-          <Route path="/:url" component={withAuth(Home)}/>
+          <Route path="/home" component={withAuth(Home)}/>
           <Route>
             <Result
               status="404"
